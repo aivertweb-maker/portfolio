@@ -1366,7 +1366,22 @@ body::before {
         <div class="form-field"><label>Last Name</label><input type="text" id="f-lname" placeholder="surname"></div>
       </div>
       <div class="form-field"><label>Email Address</label><input type="email" id="f-email" placeholder="you@example.com"></div>
-      <div class="form-field"><label>Phone (with country code)</label><input type="tel" id="f-phone" placeholder="+91 xxxx"></div>
+      <div class="form-field">
+  <label>Phone Number</label>
+  <div style="display:flex; gap:8px;">
+    <select id="f-country" style="width:110px; flex-shrink:0; background:rgba(255,182,193,0.04); border:1px solid rgba(255,182,193,0.15); border-radius:2px; color:var(--white); font-family:'DM Sans',sans-serif; font-size:.86rem; padding:11px 8px; outline:none;">
+      <option value="+91">🇮🇳 +91</option>
+      <option value="+1">🇺🇸 +1</option>
+      <option value="+44">🇬🇧 +44</option>
+      <option value="+61">🇦🇺 +61</option>
+      <option value="+971">🇦🇪 +971</option>
+      <option value="+65">🇸🇬 +65</option>
+      <option value="+49">🇩🇪 +49</option>
+      <option value="+33">🇫🇷 +33</option>
+    </select>
+    <input type="tel" id="f-phone" placeholder="98765 43210" style="flex:1;">
+  </div>
+</div>
       <div class="form-field">
         <label>What do you need help with?</label>
         <select id="f-service">
@@ -1390,7 +1405,7 @@ body::before {
       </div>
       <div class="cal-grid" id="calGrid"></div>
 
-      <div class="time-label">Select time (IST)</div>
+      <div class="time-label">Select time — <span id="tzLabel">IST</span></div>
       <div class="time-row">
         <div class="time-input-wrap">
           <div class="time-field">
@@ -1406,9 +1421,23 @@ body::before {
             <button class="ampm-btn active" id="amBtn">AM</button>
             <button class="ampm-btn" id="pmBtn">PM</button>
           </div>
+          
         </div>
       </div>
-
+<div class="form-field" style="margin-bottom:18px;">
+  <label>Your Timezone</label>
+  <select id="f-timezone">
+    <option value="IST">🇮🇳 India (IST, UTC+5:30)</option>
+    <option value="GMT">🇬🇧 UK (GMT, UTC+0)</option>
+    <option value="EST">🇺🇸 US East (EST, UTC-5)</option>
+    <option value="PST">🇺🇸 US West (PST, UTC-8)</option>
+    <option value="AEST">🇦🇺 Australia (AEST, UTC+10)</option>
+    <option value="UAE">🇦🇪 UAE (GST, UTC+4)</option>
+    <option value="SGT">🇸🇬 Singapore (SGT, UTC+8)</option>
+    <option value="CET">🇩🇪 Germany (CET, UTC+1)</option>
+    <option value="CET">🇫🇷 France (CET, UTC+1)</option>
+  </select>
+</div>
       <div class="selected-dt" id="selectedDt">— select a date above —</div>
 
       <button class="form-btn" id="submitBtn">Request My Call →</button>
@@ -1637,7 +1666,9 @@ mobileMenu.addEventListener('click', e => {
     const h = document.getElementById('hourInput').value.padStart(2, '0');
     const m = document.getElementById('minInput').value.padStart(2, '0');
     const dayName = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][selectedDate.getDay()];
-    el.textContent = dayName + ', ' + selectedDate.getDate() + ' ' + MONTHS[selectedDate.getMonth()] + ' ' + selectedDate.getFullYear() + '  ·  ' + h + ':' + m + ' ' + ampm + ' IST';
+    const tz = document.getElementById('f-timezone')?.value || 'IST';
+document.getElementById('tzLabel').textContent = tz;
+el.textContent = dayName + ', ' + selectedDate.getDate() + ' ' + MONTHS[selectedDate.getMonth()] + ' ' + selectedDate.getFullYear() + '  ·  ' + h + ':' + m + ' ' + ampm + ' ' + tz;
   }
 
   document.getElementById('prevBtn').addEventListener('click', () => {
@@ -1675,7 +1706,7 @@ mobileMenu.addEventListener('click', e => {
     const fname   = document.getElementById('f-fname').value.trim();
     const lname   = document.getElementById('f-lname').value.trim();
     const email   = document.getElementById('f-email').value.trim();
-    const phone   = document.getElementById('f-phone').value.trim();
+    const phone = document.getElementById('f-country').value + document.getElementById('f-phone').value.trim().replace(/^0+/, '');
     const service = document.getElementById('f-service').value;
     const desc    = document.getElementById('f-desc').value.trim();
 
@@ -1686,7 +1717,8 @@ mobileMenu.addEventListener('click', e => {
 
     const h = document.getElementById('hourInput').value.padStart(2, '0');
     const m = document.getElementById('minInput').value.padStart(2, '0');
-    const scheduledTime = selectedDate.toDateString() + ' ' + h + ':' + m + ' ' + ampm + ' IST';
+    const tz = document.getElementById('f-timezone').value;
+const scheduledTime = selectedDate.toDateString() + ' ' + h + ':' + m + ' ' + ampm + ' ' + tz;
 
     // ── REPLACE THIS URL with your backend URL later ──
     const BACKEND_URL = 'https://portfolio-backend-1-avg1.onrender.com/submit-lead';
@@ -1711,6 +1743,12 @@ mobileMenu.addEventListener('click', e => {
     });
   });
 
+  document.getElementById('f-timezone').addEventListener('change', updateSummary);
+  document.getElementById('f-timezone').addEventListener('change', updateSummary);
+  document.getElementById('f-timezone').addEventListener('change', updateSummary);
+  document.getElementById('f-timezone').addEventListener('change', updateSummary);
+  document.getElementById('f-timezone').addEventListener('change', updateSummary);
+  document.getElementById('f-timezone').addEventListener('change', updateSummary);
   renderCal();
 })();
 </script>
